@@ -67,15 +67,15 @@ $ covid -t Miami-Dade -c daily
 
 ```
 # Cumulative cases for county
-$ covid -s Miami-Dade -c cumul
+$ covid -t Miami-Dade -c cumul
 ```
 
 ```
 # Daily deaths for county
-$ covid -s Miami-Dade -d daily
+$ covid -t Miami-Dade -d daily
 ```
 
 ```
 # Cumulative deaths for county
-$ covid -s Miami-Dade -d cumul
+$ covid -t Miami-Dade -d cumul
 ```
