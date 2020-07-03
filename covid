@@ -2,6 +2,9 @@
 
 cumulative_report_type="cumul"
 daily_report_type="daily";
+all_option="all"
+
+### State ###
 
 function get_all_states {
 	curl -s https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-states.csv \
@@ -12,14 +15,6 @@ function get_single_state {
 	get_all_states | grep -i "$1"
 }
 
-function get_single_state_deaths_cumulative {
-	get_single_state "$1" | awk -F '\t' '{ printf "%-15s\t%s\n", $1, $5 }'
-}
-
-function get_single_state_deaths_daily {
-	get_single_state "$1" | awk -F '\t' '{ printf "%-15s\t%s\n", $1, $5 - previous; previous = $5 }'
-}
-
 function get_single_state_cases_cumulative {
 	get_single_state "$1"| awk -F '\t' '{ printf "%-15s\t%s\n", $1, $4 }'
 }
@@ -28,17 +23,57 @@ function get_single_state_cases_daily {
 	get_single_state "$1"| awk -F '\t' '{ printf "%-15s\t%s\n", $1, $4 - previous; previous = $4 }'
 }
 
-while getopts ":s:d:c:" opt; do
+function get_single_state_deaths_cumulative {
+	get_single_state "$1" | awk -F '\t' '{ printf "%-15s\t%s\n", $1, $5 }'
+}
+
+function get_single_state_deaths_daily {
+	get_single_state "$1" | awk -F '\t' '{ printf "%-15s\t%s\n", $1, $5 - previous; previous = $5 }'
+}
+
+### County ###
+
+function get_all_counties {
+	curl -s https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv \
+	| awk -F ',' '{ printf "%-15s\t%-25s\t%-25s\t%-10s\t%-15s\t%s\n", $1, $2, $3, $4, $5, $6 }'
+}
+
+function get_single_county {
+	get_all_counties | awk -F '\t' -v query="$1" '{ sub(/[ \t]+$/, "", $2); if (tolower($2) == tolower(query)) printf "%-15s\t%-25s\t%-25s\t%-10s\t%-15s\t%s\n", $1, $2, $3, $4, $5, $6 }'
+}
+
+function get_single_county_cases_cumulative {
+	get_single_county "$1"| awk -F '\t' '{ printf "%-15s\t%s\n", $1, $5 }'
+}
+
+function get_single_county_cases_daily {
+	get_single_county "$1"| awk -F '\t' '{ printf "%-15s\t%s\n", $1, $5 - previous; previous = $5 }'
+}
+
+function get_single_county_deaths_cumulative {
+	get_single_county "$1" | awk -F '\t' '{ printf "%-15s\t%s\n", $1, $6 }'
+}
+
+function get_single_county_deaths_daily {
+	get_single_county "$1" | awk -F '\t' '{ printf "%-15s\t%s\n", $1, $6 - previous; previous = $6 }'
+}
+
+while getopts ":s:t:d:c:b" opt; do
 	case $opt in
 		s ) state_flag=true; state=$OPTARG;;
+		t ) county_flag=true; county=$OPTARG;;
 		d ) deaths=true; report_type=$OPTARG;;
 		c ) cases=true; report_type=$OPTARG;;
-		* ) echo 'Unknown Option:' $OPTARG; exit 1;;
+		b ) debug=true;;
+		* ) echo 'Unknown option or missing argument:' $OPTARG; exit 1;;
 	esac
 done
 
 if [ $state_flag ]; then
-	if [ $cases ] && [ $report_type == $cumulative_report_type ]; then
+	if [ "$state" == $all_option ]; then
+		get_all_states
+
+	elif [ $cases ] && [ $report_type == $cumulative_report_type ]; then
 		get_single_state_cases_cumulative "$state"
 
 	elif [ $cases ] && [ $report_type == $daily_report_type ]; then
@@ -49,9 +84,30 @@ if [ $state_flag ]; then
 
 	elif [ $deaths ] && [ $report_type = $daily_report_type ]; then
 		get_single_state_deaths_daily "$state"
+
 	else
 		get_single_state "$state"
 	fi
+
+elif [ $county_flag ]; then
+	if [ "$county" == $all_option ]; then
+		get_all_counties
+
+	elif [ $cases ] && [ $report_type == $cumulative_report_type ]; then
+		get_single_county_cases_cumulative "$county"
+
+	elif [ $cases ] && [ $report_type == $daily_report_type ]; then
+		get_single_county_cases_daily "$county"
+
+	elif [ $deaths ] && [ $report_type == $cumulative_report_type ]; then
+		get_single_county_deaths_cumulative "$county"
+
+	elif [ $deaths ] && [ $report_type = $daily_report_type ]; then
+		get_single_county_deaths_daily "$county"
+
+	else
+		get_single_county "$county"
+    fi
 else
 	get_all_states
 fi
