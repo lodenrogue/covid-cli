@@ -9,23 +9,23 @@ function get_all_states {
 }
 
 function get_single_state {
-	get_all_states | grep -i $1
+	get_all_states | grep -i "$1"
 }
 
 function get_single_state_deaths_cumulative {
-	get_single_state $1 | awk '{ printf "%-15s\t%s\n", $1, $5 }'
+	get_single_state "$1" | awk -F '\t' '{ printf "%-15s\t%s\n", $1, $5 }'
 }
 
 function get_single_state_deaths_daily {
-	get_single_state $1 | awk '{ printf "%-15s\t%s\n", $1, $5 - previous; previous = $5 }'
+	get_single_state "$1" | awk -F '\t' '{ printf "%-15s\t%s\n", $1, $5 - previous; previous = $5 }'
 }
 
 function get_single_state_cases_cumulative {
-	get_single_state $1 | awk '{ printf "%-15s\t%s\n", $1, $4 }'
+	get_single_state "$1"| awk -F '\t' '{ printf "%-15s\t%s\n", $1, $4 }'
 }
 
 function get_single_state_cases_daily {
-	get_single_state $1 | awk '{ printf "%-15s\t%s\n", $1, $4 - previous; previous = $4 }'
+	get_single_state "$1"| awk -F '\t' '{ printf "%-15s\t%s\n", $1, $4 - previous; previous = $4 }'
 }
 
 while getopts ":s:d:c:" opt; do
@@ -39,18 +39,18 @@ done
 
 if [ $state_flag ]; then
 	if [ $cases ] && [ $report_type == $cumulative_report_type ]; then
-		get_single_state_cases_cumulative $state
+		get_single_state_cases_cumulative "$state"
 
 	elif [ $cases ] && [ $report_type == $daily_report_type ]; then
-		get_single_state_cases_daily $state
+		get_single_state_cases_daily "$state"
 
 	elif [ $deaths ] && [ $report_type == $cumulative_report_type ]; then
-		get_single_state_deaths_cumulative $state
+		get_single_state_deaths_cumulative "$state"
 
 	elif [ $deaths ] && [ $report_type = $daily_report_type ]; then
-		get_single_state_deaths_daily $state
+		get_single_state_deaths_daily "$state"
 	else
-		get_single_state $state
+		get_single_state "$state"
 	fi
 else
 	get_all_states
