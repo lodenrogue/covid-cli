@@ -4,6 +4,7 @@
 - Service provides data by **state** or **county**
 - Data is pulled from a NY Times database which is updated daily
 - All calls are case-insensitive
+- Output is csv
 
 #### Basic Usage
 
