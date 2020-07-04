@@ -8,7 +8,7 @@ all_option="all"
 
 function get_all_states {
 	curl -s https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-states.csv \
-	|  awk -F ',' '{ printf "%-15s\t%-25s\t%-10s\t%-15s\t%s\n", $1, $2, $3, $4, $5 }'
+	| awk '{ print }'
 }
 
 function get_single_state {
@@ -16,46 +16,46 @@ function get_single_state {
 }
 
 function get_single_state_cases_cumulative {
-	get_single_state "$1"| awk -F '\t' '{ printf "%-15s\t%s\n", $1, $4 }'
+	get_single_state "$1"| awk -F ',' '{ printf "%s,%s\n", $1, $4 }'
 }
 
 function get_single_state_cases_daily {
-	get_single_state "$1"| awk -F '\t' '{ printf "%-15s\t%s\n", $1, $4 - previous; previous = $4 }'
+	get_single_state "$1"| awk -F ',' '{ printf "%s,%s\n", $1, $4 - previous; previous = $4 }'
 }
 
 function get_single_state_deaths_cumulative {
-	get_single_state "$1" | awk -F '\t' '{ printf "%-15s\t%s\n", $1, $5 }'
+	get_single_state "$1" | awk -F ',' '{ printf "%s,%s\n", $1, $5 }'
 }
 
 function get_single_state_deaths_daily {
-	get_single_state "$1" | awk -F '\t' '{ printf "%-15s\t%s\n", $1, $5 - previous; previous = $5 }'
+	get_single_state "$1" | awk -F ',' '{ printf "%s,%s\n", $1, $5 - previous; previous = $5 }'
 }
 
 ### County ###
 
 function get_all_counties {
 	curl -s https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv \
-	| awk -F ',' '{ printf "%-15s\t%-25s\t%-25s\t%-10s\t%-15s\t%s\n", $1, $2, $3, $4, $5, $6 }'
+	| awk '{ print }'
 }
 
 function get_single_county {
-	get_all_counties | awk -F '\t' -v query="$1" '{ sub(/[ \t]+$/, "", $2); if (tolower($2) == tolower(query)) printf "%-15s\t%-25s\t%-25s\t%-10s\t%-15s\t%s\n", $1, $2, $3, $4, $5, $6 }'
+	get_all_counties | awk -F ',' -v query="$1" 'tolower($2) == tolower(query)'
 }
 
 function get_single_county_cases_cumulative {
-	get_single_county "$1"| awk -F '\t' '{ printf "%-15s\t%s\n", $1, $5 }'
+	get_single_county "$1"| awk -F ',' '{ printf "%s,%s\n", $1, $5 }'
 }
 
 function get_single_county_cases_daily {
-	get_single_county "$1"| awk -F '\t' '{ printf "%-15s\t%s\n", $1, $5 - previous; previous = $5 }'
+	get_single_county "$1"| awk -F ',' '{ printf "%s,%s\n", $1, $5 - previous; previous = $5 }'
 }
 
 function get_single_county_deaths_cumulative {
-	get_single_county "$1" | awk -F '\t' '{ printf "%-15s\t%s\n", $1, $6 }'
+	get_single_county "$1" | awk -F ',' '{ printf "%s,%s\n", $1, $6 }'
 }
 
 function get_single_county_deaths_daily {
-	get_single_county "$1" | awk -F '\t' '{ printf "%-15s\t%s\n", $1, $6 - previous; previous = $6 }'
+	get_single_county "$1" | awk -F ',' '{ printf "%s,%s\n", $1, $6 - previous; previous = $6 }'
 }
 
 while getopts ":s:t:d:c:b" opt; do
