@@ -1,7 +1,7 @@
 # covid-cli
 
 - Command line interface for Covid-19 data
-- Service provides data by **state** or **county**
+- Service provides data by **US**, **state**, and **county**
 - Data is pulled from a NY Times database which is updated daily
 - All calls are case-insensitive
 - Output is csv
@@ -9,8 +9,13 @@
 #### Basic Usage
 
 ```
-# All states
+# All US
 $ covid
+```
+
+```
+# All states
+$ covid -s all
 ```
 
 ```
@@ -26,6 +31,32 @@ $ covid -t all
 ```
 # Specific county
 $ covid -t Broward
+```
+
+#### US
+```
+# All data for US
+$ covid
+```
+
+```
+# Daily cases for US
+$ covid -c daily
+```
+
+```
+# Cumulative cases for US
+$ covid -c cumul
+```
+
+```
+# Daily deaths for US
+$ covid -d daily
+```
+
+```
+# Cumulative deaths for US
+$ covid -d cumul
 ```
 
 #### State
