@@ -1,0 +1,63 @@
+#! /bin/bash
+
+function fail {
+	echo -e "\e[31mTest failed:\e[0m" "$1"
+}
+
+function pass {
+	echo -e "\e[32mTest passed:\e[0m" "$1"
+}
+
+function assert_equals {
+	test_name=${FUNCNAME[1]}
+	if [ "$1" == "$2" ]; then
+		pass $test_name
+	else
+		fail $test_name
+	fi
+}
+
+function curl {
+  cat us/base.data
+}
+
+function test_us_base {
+	result=$(./../covid)
+	expected=$(cat us/base.data)
+	assert_equals "$expected" "$result"
+}
+
+function test_us_cases_daily {
+	result=$(./../covid -c daily)
+	expected=$(cat us/cases_daily.data)
+	assert_equals "$expected" "$result"
+}
+
+function test_us_cases_cumulative {
+	result=$(./../covid -c cumul)
+	expected=$(cat us/cases_cumul.data)
+	assert_equals "$expected" "$result"
+}
+
+function test_us_deaths_daily {
+	result=$(./../covid -d daily)
+	expected=$(cat us/deaths_daily.data)
+	assert_equals "$expected" "$result"
+}
+
+function test_us_deaths_cumulative {
+	result=$(./../covid -d cumul)
+	expected=$(cat us/deaths_cumul.data)
+	assert_equals "$expected" "$result"
+}
+
+export -f curl
+
+test_us_base
+
+test_us_cases_daily
+test_us_cases_cumulative
+
+test_us_deaths_daily
+test_us_deaths_cumulative
+
