@@ -63,6 +63,7 @@ get_all_counties() {
 }
 
 get_single_county() {
+	echo "date,county,state,fips,cases,deaths"
 	get_all_counties | awk -F ',' -v query="$1" 'tolower($2) == tolower(query)'
 }
 
@@ -71,7 +72,7 @@ get_single_county_cases_cumulative() {
 }
 
 get_single_county_cases_daily() {
-	get_single_county "$1"| awk -F ',' '{ printf "%s,%s\n", $1, $5 - previous; previous = $5 }'
+	get_single_county "$1"| awk -F ',' 'BEGIN { print "date,cases" } NR > 1 { printf "%s,%s\n", $1, $5 - previous; previous = $5 }'
 }
 
 get_single_county_deaths_cumulative() {
@@ -79,7 +80,7 @@ get_single_county_deaths_cumulative() {
 }
 
 get_single_county_deaths_daily() {
-	get_single_county "$1" | awk -F ',' '{ printf "%s,%s\n", $1, $6 - previous; previous = $6 }'
+	get_single_county "$1" | awk -F ',' 'BEGIN { print "date,deaths" } NR > 1 { printf "%s,%s\n", $1, $6 - previous; previous = $6 }'
 }
 
 while getopts ":s:t:d:c:b" opt; do

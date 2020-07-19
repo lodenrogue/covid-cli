@@ -1,0 +1,54 @@
+#! /bin/bash
+
+source xunit
+
+curl() {
+	cat county/base.csv
+}
+
+test_county_all() {
+	result=$(../covid -t all)
+	expected=$(cat county/base.csv)
+	assert_equals "$expected" "$result"
+}
+
+test_single_county() {
+	result=$(../covid -t snohomish)
+	expected=$(cat county/single_county.csv)
+	assert_equals "$expected" "$result"
+}
+
+test_single_county_cases_cumulative() {
+	result=$(../covid -t snohomish -c cumul)
+	expected=$(cat county/cases_cumul.csv)
+	assert_equals "$expected" "$result"
+}
+
+test_single_county_cases_daily() {
+	result=$(../covid -t snohomish -c daily)
+	expected=$(cat county/cases_daily.csv)
+	assert_equals "$expected" "$result"
+}
+
+test_single_county_deaths_cumulative() {
+	result=$(../covid -t snohomish -d cumul)
+	expected=$(cat county/deaths_cumul.csv)
+	assert_equals "$expected" "$result"
+}
+
+test_single_county_deaths_daily() {
+	result=$(../covid -t snohomish -d daily)
+	expected=$(cat county/deaths_daily.csv)
+	assert_equals "$expected" "$result"
+}
+
+export -f curl
+
+test_county_all
+test_single_county
+
+test_single_county_cases_cumulative
+test_single_county_cases_daily
+
+test_single_county_deaths_cumulative
+test_single_county_deaths_daily
