@@ -35,6 +35,7 @@ function get_all_states {
 }
 
 function get_single_state {
+	echo "date,state,fips,cases,deaths"
 	get_all_states | grep -i "$1"
 }
 
@@ -43,7 +44,7 @@ function get_single_state_cases_cumulative {
 }
 
 function get_single_state_cases_daily {
-	get_single_state "$1"| awk -F ',' '{ printf "%s,%s\n", $1, $4 - previous; previous = $4 }'
+	get_single_state "$1"| awk -F ',' 'BEGIN { print "date,cases" } NR > 1 { printf "%s,%s\n", $1, $4 - previous; previous = $4 }'
 }
 
 function get_single_state_deaths_cumulative {
@@ -51,7 +52,7 @@ function get_single_state_deaths_cumulative {
 }
 
 function get_single_state_deaths_daily {
-	get_single_state "$1" | awk -F ',' '{ printf "%s,%s\n", $1, $5 - previous; previous = $5 }'
+	get_single_state "$1" | awk -F ',' 'BEGIN { print "date,deaths" } NR > 1 { printf "%s,%s\n", $1, $5 - previous; previous = $5 }'
 }
 
 ### County ###

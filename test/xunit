@@ -1,0 +1,16 @@
+function fail {
+	echo -e "\e[31mTest failed:\e[0m" "$1"
+}
+
+function pass {
+	echo -e "\e[32mTest passed:\e[0m" "$1"
+}
+
+function assert_equals {
+	test_name=${FUNCNAME[1]}
+	if [ "$1" == "$2" ]; then
+		pass $test_name
+	else
+		fail $test_name
+	fi
+}

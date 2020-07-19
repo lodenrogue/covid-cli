@@ -1,0 +1,7 @@
+date,state,fips,cases,deaths
+2020-01-21,Washington,53,1,1
+2020-01-22,Washington,53,4,2
+2020-01-23,Washington,53,8,3
+2020-01-24,Illinois,17,1,0
+2020-01-24,Washington,53,10,5
+2020-01-25,California,06,1,0
