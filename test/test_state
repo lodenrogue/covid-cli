@@ -2,47 +2,47 @@
 
 source xunit
 
-function curl {
+curl() {
 	cat state/base.csv
 }
 
-function test_state_base {
+test_state_base() {
 	local result=$(./../covid)
 	local expected=$(cat state/base.csv)
 	assert_equals "$expected" "$result"
 }
 
-function test_state_all {
+test_state_all() {
 	local result=$(./../covid -s all)
 	local expected=$(cat state/base.csv)
 	assert_equals "$expected" "$result"
 }
 
-function test_single_state {
+test_single_state() {
 	local result=$(./../covid -s washington)
 	local expected=$(cat state/single_state.csv)
 	assert_equals "$expected" "$result"
 }
 
-function test_single_state_cases_cumulative {
+test_single_state_cases_cumulative() {
 	local result=$(./../covid -s washington -c cumul)
 	local expected=$(cat state/cases_cumul.csv)
 	assert_equals "$expected" "$result"
 }
 
-function test_single_state_cases_daily {
+test_single_state_cases_daily() {
 	local result=$(./../covid -s washington -c daily)
 	local expected=$(cat state/cases_daily.csv)
 	assert_equals "$expected" "$result"
 }
 
-function test_single_state_deaths_cumulative {
+test_single_state_deaths_cumulative() {
 	local result=$(./../covid -s washington -d cumul)
 	local expected=$(cat state/deaths_cumul.csv)
 	assert_equals "$expected" "$result"
 }
 
-function test_single_state_deaths_daily {
+test_single_state_deaths_daily() {
 	local result=$(./../covid -s washington -d daily)
 	local expected=$(cat state/deaths_daily.csv)
 	assert_equals "$expected" "$result"

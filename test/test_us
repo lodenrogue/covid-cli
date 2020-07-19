@@ -2,35 +2,35 @@
 
 source xunit
 
-function curl {
+curl() {
   cat us/base.csv
 }
 
-function test_us_base {
+test_us_base() {
 	local result=$(./../covid)
 	local expected=$(cat us/base.csv)
 	assert_equals "$expected" "$result"
 }
 
-function test_us_cases_daily {
+test_us_cases_daily() {
 	local result=$(./../covid -c daily)
 	local expected=$(cat us/cases_daily.csv)
 	assert_equals "$expected" "$result"
 }
 
-function test_us_cases_cumulative {
+test_us_cases_cumulative() {
 	local result=$(./../covid -c cumul)
 	local expected=$(cat us/cases_cumul.csv)
 	assert_equals "$expected" "$result"
 }
 
-function test_us_deaths_daily {
+test_us_deaths_daily() {
 	local result=$(./../covid -d daily)
 	local expected=$(cat us/deaths_daily.csv)
 	assert_equals "$expected" "$result"
 }
 
-function test_us_deaths_cumulative {
+test_us_deaths_cumulative() {
 	local result=$(./../covid -d cumul)
 	local expected=$(cat us/deaths_cumul.csv)
 	assert_equals "$expected" "$result"
